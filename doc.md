@@ -11,61 +11,64 @@ Before starting, save this thread and share it with your friends or colleagues w
 Pre-requisites:
 Rust 🦀 (Not necessary but speeds up the learning process if already known)
 
-1. Anatomy of the Cairo Contracts.
+## 1. Anatomy of the Cairo Contracts.
 
-   - `1.1` Each cairo contract needs to have an interface/blueprint of the contract defined beforehand, it defines the functions in advance that will be known to the outside world.
-     The interface is defined by annotating a trait with #[starknet::interface].
-     [1.1.1 SS cairo interface simple storage]
+- Each cairo contract needs to have an interface/blueprint of the contract defined beforehand, it defines the functions in advance that will be known to the outside world.
+  The interface is defined by annotating a trait with #[starknet::interface].
 
-     This can be overcome by simply using #[generate_trait], which tells the compiler to generate the corresponding trait definition.
-     [1.1.2 SS cairo generate_trait]
+  This can be overcome by simply using #[generate_trait], which tells the compiler to generate the corresponding trait definition.
 
-   All the functions of the trait are considered as public functions that are callable from outside world.
+  ![interface](https://raw.githubusercontent.com/JustUzair/starknet-basics/refs/heads/master/screenshots/interface.png)
 
-   NOTE 📝: constructor and internal functions are not a part of the trait/interface.
+All the functions of the trait are considered as public functions that are callable from outside world.
 
-   All the contract interfaces use a generic type of self parameter that represents the generic contract state denoted by TContractState (can be named anything).
+NOTE 📝: constructor and internal functions are not a part of the trait/interface.
 
-   - `1.2`
+All the contract interfaces use a generic type of self parameter that represents the generic contract state denoted by TContractState (can be named anything).
 
-2. Storage
-   `2.1` The Storage struct is a struct like any other, except that it must be annotated with the #[storage] attribute
+## 2. Storage
 
-   [2.1.1 SS simple storage layout]
+- The Storage struct is a struct like any other, except that it must be annotated with the `#[storage]` attribute
 
-   `2.2` Reading from and writing to storage state.
-   To read the new value we call the read() function and write() to modify the storage.
-   For more advanced storage layout refer to : https://book.cairo-lang.org/ch14-01-00-contract-storage.html#storing-custom-types-with-the-store-trait
+Reading from and writing to storage state.
+To read the new value we call the read() function and write() to modify the storage.
 
-   [2.1.2 SS simple read write operation]
+![storage](https://raw.githubusercontent.com/JustUzair/starknet-basics/refs/heads/master/screenshots/storage.png)
 
-3. Functions
-   - `3.1` Before diving into functions, it's important to understand the snapshots and refernces.
-     - `3.1.1` A snapshot is an immutable view of a value at a certain point in time.
-       Snapshots are defined using @, when self is a snapshot of ContractState, only read access is allowed.
-       Any function that defines the state with a snapshot is treated as view function.
-     - `3.1.2` A refernce type of ContractState on the other hand implies that the state may be modified by the function.
-   - `3.2` Visibility of the functions:
-     - `3.2.1` External/Public functions:
-     - The functions that are annotated with #[abi(embed_v0)] or #[external(v0)] are treated as external functions
-     - `3.2.2` Internal/Private - On the other hand the function or the group not marked with any of the abi-embed or external annotations are treated as internal/private by default
-     - NOTE 📝: It is important to note that internal and private are used interchangably in cairo.
-       Refer to more advanced annotations here: https://book.cairo-lang.org/ch14-02-contract-functions.html#abiper_item-attribute
-4. Events and Errors
+For more advanced storage layout refer to : https://book.cairo-lang.org/ch14-01-00-contract-storage.html#storing-custom-types-with-the-store-trait
 
-   - `4.1` An event is defined by declaring an Enum first and then adding all the events and their corresponding types to that enum. Also the enum must be annotated with [derive(starknet::Event)]
+## 3. Functions
 
-     Event data can be annotated by #[key] to filter the data on explorer, similar to indexed in solidity
+- `3.1` Before diving into functions, it's important to understand the snapshots and refernces.
+  - A snapshot is an immutable view of a value at a certain point in time.
+    Snapshots are defined using @, when self is a snapshot of ContractState, only read access is allowed.
+    Any function that defines the state with a snapshot is treated as view function.
+  - A reference type of ContractState on the other hand implies that the state may be modified by the function.
+    ![snapshot-and-ref.png](https://raw.githubusercontent.com/JustUzair/starknet-basics/refs/heads/master/screenshots/snapshot-and-ref.png)
+- `3.2` Visibility of the functions:
 
-     Another annotation besides key is #[flat], which essentially flattens the complex types for example nested enums.
+  - `3.2.1` External/Public functions:
+  - The functions that are annotated with #[abi(embed_v0)] or #[external(v0)] are treated as external functions
+  - `3.2.2` Internal/Private - On the other hand the function or the group not marked with any of the abi-embed or external annotations are treated as internal/private by default
 
-     Events are emitted using self.emit(EventName)
+  - NOTE 📝: It is important to note that internal and private are used interchangably in cairo.
+    Refer to more advanced annotations here: https://book.cairo-lang.org/ch14-02-contract-functions.html#abiper_item-attribute
 
-Yay you made it till the end 🥳🎉
-Now take a look at the contract in the image that combines all the concepts and puts it into a single, easy-to-understand contract.
+    ![functions-visibility.png](https://raw.githubusercontent.com/JustUzair/starknet-basics/refs/heads/master/screenshots/functions-visibility.png)
 
-You can also view the contract here: [Link]
-[SS NameRegistry.sol]
+## 4. Events and Errors
 
-Here is the github repo with documentation and all the code:
-[github-repo]
+- `4.1` An event is defined by declaring an Enum first and then adding all the events and their corresponding types to that enum. Also the enum must be annotated with [derive(starknet::Event)]
+
+  Event data can be annotated by #[key] to filter the data on explorer, similar to indexed in solidity
+
+  Another annotation besides key is #[flat], which essentially flattens the complex types for example nested enums.
+
+  Events are emitted using self.emit(EventName)
+
+  ![events-and-errors.png](https://raw.githubusercontent.com/JustUzair/starknet-basics/refs/heads/master/screenshots/events-and-errors.png)
+
+## Yay you made it till the end 🥳🎉
+
+Now take a look at the contract that combines all the concepts and puts it into a single, easy-to-understand contract.
+[NameRegistry.cairo](/src/NameRegistry.cairo)
